@@ -1,0 +1,59 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "configure macOS",
+      "type": "shell",
+      "command": "cmake -S . -B build -DPICO_BOARD=rp2040_baram -DPICO_SDK_PATH='~/dev/pico/pico-sdk'",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "configure windows",
+      "type": "shell",
+      "command": "cmake -S . -B build -DPICO_BOARD=rp2040_baram -G 'MinGW Makefiles' -DPICO_SDK_PATH='D:/develop/pico/pico-sdk'",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "cmake --build build -j16",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "clean",
+      "type": "shell",
+      "command": "cmake --build build --target clean",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "down macOS",
+      "type": "shell",
+      "command": "./tools/mac/rp2040_loader -p /dev/cu.usbmodem124101 -f build/src/rp2040_fw.bin -r",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }      
+    },
+    {
+      "label": "down Windows",
+      "type": "shell",
+      "command": "./tools/windows/rp2040_loader.exe -p com15 -f build/src/rp2040_fw.bin -r",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }      
+    }    
+  ]
+}
