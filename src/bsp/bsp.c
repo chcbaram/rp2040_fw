@@ -4,7 +4,6 @@
 
 
 
-
 bool bspInit(void)
 {
   // overclock the rp2040 to 250mhz
