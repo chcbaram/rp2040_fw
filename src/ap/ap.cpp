@@ -22,7 +22,7 @@ void apInit(void)
 
   pwm_program_init(pio, 0, offset, 25, 1000000);
   pio_sm_set_enabled(pio, 0, true);  
-  pio->txf[0] = (pwm_out) + ((255-pwm_out)<<8);
+  pio_sm_put_blocking(pio, 0, (pwm_out) + ((255-pwm_out)<<8));
 }
 
 void apMain(void)
@@ -37,8 +37,6 @@ void apMain(void)
       pre_time = millis();
       //ledToggle(_DEF_LED1);
       pwm_out = (pwm_out + 1) % 256;
-      //pwm_out = 0;
-      //pio0->txf[0] = (pwm_out) + ((255-pwm_out)<<8);
       pio_sm_put_blocking(pio0, 0, (pwm_out) + ((255-pwm_out)<<8));
     }
 
