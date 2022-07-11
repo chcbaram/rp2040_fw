@@ -46,8 +46,8 @@ pico_enable_stdio_uart(${PRJ_NAME} 0)
 pico_set_linker_script(${PRJ_NAME} "${CMAKE_SOURCE_DIR}/src/bsp/ldscript/pico_flash.ld")
 
 
-pico_generate_pio_header(${PRJ_NAME} ${CMAKE_CURRENT_LIST_DIR}/hw/driver/blink.pio)
-pico_generate_pio_header(${PRJ_NAME} ${CMAKE_CURRENT_LIST_DIR}/hw/driver/pwm.pio)
+pico_generate_pio_header(${PRJ_NAME} ${CMAKE_CURRENT_LIST_DIR}/hw/driver/pio/blink.pio)
+pico_generate_pio_header(${PRJ_NAME} ${CMAKE_CURRENT_LIST_DIR}/hw/driver/pio/pwm.pio)
 
 set_target_properties(${PRJ_NAME} PROPERTIES SUFFIX ".elf")
 add_custom_command(TARGET ${PRJ_NAME} POST_BUILD
