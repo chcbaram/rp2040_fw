@@ -143,6 +143,11 @@ bool cliOpen(uint8_t ch, uint32_t baud)
   return cli_node.is_open;
 }
 
+uint8_t cliGetPort(void)
+{
+  return cli_node.ch;
+}
+
 bool cliOpenLog(uint8_t ch, uint32_t baud)
 {
   bool ret;

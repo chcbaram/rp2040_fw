@@ -19,6 +19,7 @@ void apMain(void)
 {
   uint32_t pre_time;
 
+
   while(1)
   {
     if (millis()-pre_time >= 500)
@@ -27,7 +28,7 @@ void apMain(void)
       ledToggle(_DEF_LED1);
     }
 
-    cliMain();
+    cliMain();        
   }
 }
 
