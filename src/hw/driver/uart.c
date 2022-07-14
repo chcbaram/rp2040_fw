@@ -102,6 +102,8 @@ bool uartOpen(uint8_t ch, uint32_t baud)
       // Turn On FIFO      
       uart_set_fifo_enabled(uart_tbl[ch].p_uart, true);
 
+      uartFlush(ch);
+      
       ret = true;
       break;      
   }
