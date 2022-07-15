@@ -33,6 +33,9 @@
 #define      HW_LOG_BOOT_BUF_MAX    1024
 #define      HW_LOG_LIST_BUF_MAX    1024
 
+#define _USE_HW_BUTTON
+#define      HW_BUTTON_MAX_CH       4
+#define      HW_BUTTON_OBJ_USE      1
 
 
 #endif /* SRC_HW_HW_DEF_H_ */

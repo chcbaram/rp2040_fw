@@ -27,6 +27,7 @@
 #include "lcd.h"
 #include "flash.h"
 #include "reset.h"
+#include "button.h"
 
 
 bool hwInit(void);
