@@ -58,7 +58,7 @@ static void TransferDoneISR(void)
   if (is_write_frame == true)
   {
     is_write_frame = false;    
-    gpioPinWrite(_PIN_DEF_CS, _DEF_HIGH);
+    //gpioPinWrite(_PIN_DEF_CS, _DEF_HIGH);
 
     if (frameCallBack != NULL)
     {
@@ -312,7 +312,7 @@ bool st7735SendBuffer(uint8_t *p_data, uint32_t length, uint32_t timeout_ms)
   gpioPinWrite(_PIN_DEF_DC, _DEF_HIGH);
   gpioPinWrite(_PIN_DEF_CS, _DEF_LOW);
 
-  spiDmaTxTransfer(_DEF_SPI1, (void *)p_data, length+10, 0);
+  spiDmaTxTransfer(_DEF_SPI1, (void *)p_data, length, 0);
   return true;
 }
 
