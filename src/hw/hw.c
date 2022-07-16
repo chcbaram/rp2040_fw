@@ -29,6 +29,7 @@ bool hwInit(void)
   logInit();
   ledInit();
   buttonInit();
+  buzzerInit();
   uartInit();
   uartOpen(_DEF_UART1, 115200);
   logOpen(_DEF_UART1, 115200);

@@ -3,6 +3,7 @@
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "files.associations": {
     "uart.h": "c",
-    "button.h": "c"
+    "button.h": "c",
+    "buzzer.h": "c"
   }
 }

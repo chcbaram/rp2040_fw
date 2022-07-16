@@ -36,6 +36,7 @@ target_link_libraries(${PRJ_NAME}
   hardware_irq
   hardware_i2c
   hardware_flash
+  hardware_pwm
   )
 
 pico_add_extra_outputs(${PRJ_NAME})

@@ -2,6 +2,15 @@
 
 
 
+extern void buzzerISR(void *arg);
+
+
+void SysTick_Handler(void)
+{
+  buzzerISR(NULL);
+}
+
+
 
 
 
@@ -13,6 +22,9 @@ bool bspInit(void)
   
   stdio_init_all();
   
+
+  SysTick_Config(SystemCoreClock / 1000U);
+
   __enable_irq();
   
   return true;

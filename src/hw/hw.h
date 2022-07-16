@@ -28,6 +28,7 @@
 #include "flash.h"
 #include "reset.h"
 #include "button.h"
+#include "buzzer.h"
 
 
 bool hwInit(void);
