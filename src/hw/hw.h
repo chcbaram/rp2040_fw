@@ -29,6 +29,7 @@
 #include "reset.h"
 #include "button.h"
 #include "buzzer.h"
+#include "ws2812.h"
 
 
 bool hwInit(void);

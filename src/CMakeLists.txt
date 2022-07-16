@@ -37,6 +37,7 @@ target_link_libraries(${PRJ_NAME}
   hardware_i2c
   hardware_flash
   hardware_pwm
+  hardware_pio
   )
 
 pico_add_extra_outputs(${PRJ_NAME})
@@ -44,6 +45,8 @@ pico_enable_stdio_usb(${PRJ_NAME}  1)
 pico_enable_stdio_uart(${PRJ_NAME} 0)
 
 pico_set_linker_script(${PRJ_NAME} "${CMAKE_SOURCE_DIR}/src/bsp/ldscript/pico_flash.ld")
+
+pico_generate_pio_header(${PRJ_NAME} ${CMAKE_CURRENT_LIST_DIR}/hw/driver/pio/ws2812.pio)
 
 set_target_properties(${PRJ_NAME} PROPERTIES SUFFIX ".elf")
 add_custom_command(TARGET ${PRJ_NAME} POST_BUILD

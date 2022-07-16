@@ -38,5 +38,8 @@
 #define      HW_BUTTON_MAX_CH       4
 #define      HW_BUTTON_OBJ_USE      1
 
+#define _USE_HW_WS2812
+#define      HW_WS2812_MAX_CH       1
+
 
 #endif /* SRC_HW_HW_DEF_H_ */
