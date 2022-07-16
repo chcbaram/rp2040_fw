@@ -51,6 +51,10 @@ void __isr dma_complete()
 }
 
 
+
+
+
+
 bool spiInit(void)
 {
   bool ret = true;
@@ -78,16 +82,16 @@ bool spiBegin(uint8_t ch)
   switch(ch)
   {
     case _DEF_SPI1:
-      p_spi->h_spi = spi1;
+      p_spi->h_spi = spi0;
 
       spi_init(p_spi->h_spi, 10*1000*1000); 
-      gpio_set_function(10, GPIO_FUNC_SPI); // SCK
-      gpio_set_function(11, GPIO_FUNC_SPI); // MOSI
+      gpio_set_function(2, GPIO_FUNC_SPI); // SCK
+      gpio_set_function(3, GPIO_FUNC_SPI); // MOSI
       //gpio_set_function(12, GPIO_FUNC_SPI); // MISO
       spi_set_format(p_spi->h_spi, p_spi->bit_width, p_spi->cpol, p_spi->cpha, SPI_MSB_FIRST);
 
-      gpio_set_slew_rate(10, GPIO_SLEW_RATE_FAST);
-      gpio_set_slew_rate(11, GPIO_SLEW_RATE_FAST);
+      gpio_set_slew_rate(2, GPIO_SLEW_RATE_FAST);
+      gpio_set_slew_rate(3, GPIO_SLEW_RATE_FAST);
 
       // dma init
       p_spi->dma_tx = dma_claim_unused_channel(true);;

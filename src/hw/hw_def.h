@@ -41,5 +41,26 @@
 #define _USE_HW_WS2812
 #define      HW_WS2812_MAX_CH       1
 
+#define _USE_HW_GPIO
+#define      HW_GPIO_MAX_CH         4
+
+#define _USE_HW_SPI
+#define      HW_SPI_MAX_CH          1
+
+#define _USE_HW_LCD
+#define      HW_LCD_LVGL            1
+#define      HW_LCD_LOGO            1
+#define _USE_HW_ST7735
+#define      HW_ST7735_MODEL        0
+#define      HW_LCD_WIDTH           160
+#define      HW_LCD_HEIGHT          80
+
+
+
+#define _PIN_GPIO_LCD_BLK           2
+#define _PIN_GPIO_LCD_DC            1
+#define _PIN_GPIO_LCD_CS            0
+#define _PIN_GPIO_LCD_RST           3
+
 
 #endif /* SRC_HW_HW_DEF_H_ */

@@ -16,6 +16,11 @@ extern "C" {
 
 #ifdef _USE_HW_LCD
 
+#ifdef HW_LCD_LVGL
+#include "lvgl/lvgl.h"
+#endif
+
+
 #define LCD_WIDTH         HW_LCD_WIDTH
 #define LCD_HEIGHT        HW_LCD_HEIGHT
 
@@ -66,6 +71,7 @@ enum class_color {
 };
 #endif
 
+
 typedef enum
 {
   LCD_FONT_07x10,
@@ -109,8 +115,18 @@ typedef struct lcd_driver_t_
 
 
 #ifdef HW_LCD_LVGL
-#define LCD_IMAGE_DEF(var_name) extern lcd_img_t var_name;
+#define LVGL_IMG_DEF(var_name) extern lvgl_img_t var_name;
 #endif
+
+typedef struct
+{
+  const lvgl_img_t *p_img;
+  int16_t x;
+  int16_t y;
+  int16_t w;
+  int16_t h;
+} image_t;
+
 
 bool lcdInit(void);
 bool lcdIsInit(void);
@@ -164,7 +180,11 @@ void lcdPrintfResize(int x, int y, uint16_t color,  float ratio_h, const char *f
 void lcdSetResizeMode(LcdResizeMode mode);
 
 #ifdef HW_LCD_LVGL
-void lcdDrawImage(int16_t x, int16_t y, lcd_img_t *p_img);
+image_t lcdCreateImage(lvgl_img_t *p_lvgl_img, int16_t x, int16_t y, int16_t w, int16_t h);
+void lcdDrawImage(image_t *p_img, int16_t x, int16_t y);
+void lcdLogoOn(void);
+void lcdLogoOff(void);
+bool lcdLogoIsOn(void);
 #endif
 
 #endif /* _USE_HW_LCD */

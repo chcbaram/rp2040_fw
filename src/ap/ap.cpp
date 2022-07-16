@@ -27,6 +27,11 @@ void apMain(void)
       pre_time = millis();
       ledToggle(_DEF_LED1);      
     }
+    if (buttonGetData() > 0 && lcdLogoIsOn() == true)
+    {
+      buzzerBeep(100);
+      lcdLogoOff();
+    }
 
     cliMain();        
   }

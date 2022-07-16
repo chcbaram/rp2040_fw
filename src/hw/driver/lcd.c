@@ -23,6 +23,10 @@
 #include "lcd/ssd1306.h"
 #endif
 
+#ifdef _USE_HW_ST7735
+#include "lcd/st7735.h"
+#endif
+
 #ifdef _USE_HW_PWM
 #include "pwm.h"
 #endif
@@ -45,7 +49,7 @@
 
 
 #define LCD_OPT_DEF   __attribute__((optimize("O2")))
-#define _PIN_DEF_BL_CTL       0
+#define _PIN_DEF_BL_CTL       _PIN_GPIO_LCD_BLK
 
 
 typedef struct
@@ -74,7 +78,7 @@ static volatile int32_t draw_fps = -1;
 static volatile uint32_t draw_pre_time = 0;
 static volatile uint32_t draw_frame_time = 0;
 static LcdResizeMode lcd_resize_mode = LCD_RESIZE_NEAREST;
-
+static bool is_logo_on = false;
 
 static uint16_t *p_draw_frame_buf = NULL;
 static uint16_t __attribute__((aligned(64))) frame_buffer[1][HW_LCD_WIDTH * HW_LCD_HEIGHT];
@@ -86,7 +90,7 @@ static lcd_font_t *font_tbl[LCD_FONT_MAX] = { &font_07x10, &font_11x18, &font_16
 
 static volatile bool requested_from_thread = false;
 
-
+LVGL_IMG_DEF(logo_img);
 
 
 static void disHanFont(int x, int y, han_font_t *FontPtr, uint16_t textcolor);
@@ -113,13 +117,16 @@ void TransferDoneISR(void)
 }
 
 
+
+
+
 bool lcdInit(void)
 {
   backlight_value = 100;
 
 
-  is_init = ssd1306Init();
-  ssd1306InitDriver(&lcd);
+  is_init = st7735Init();
+  st7735InitDriver(&lcd);
 
   lcd.setCallBack(TransferDoneISR);
 
@@ -132,15 +139,11 @@ bool lcdInit(void)
 
   p_draw_frame_buf = frame_buffer[frame_index];
 
-  uint32_t pre_time;  
-  lcdDrawFillRect(0, 0, LCD_WIDTH, LCD_HEIGHT, white);
-  pre_time = millis();
-  lcdUpdateDraw();
-  logPrintf("lcd \n");
-  logPrintf("   draw : %d ms\n", millis()-pre_time);
-
   lcdSetBackLight(100);
 
+  #if HW_LCD_LOGO > 0
+  lcdLogoOn();
+  #endif
 
   if (is_init != true)
   {
@@ -1027,28 +1030,87 @@ void lcdSetResizeMode(LcdResizeMode mode)
 }
 
 #ifdef HW_LCD_LVGL
-void lcdDrawImage(int16_t x, int16_t y, lcd_img_t *p_img)
+image_t lcdCreateImage(lvgl_img_t *p_lvgl, int16_t x, int16_t y, int16_t w, int16_t h)
 {
-  int16_t w;
-  int16_t h;
+  image_t ret;
+
+  ret.x = x;
+  ret.y = y;
+
+  if (w > 0) ret.w = w;
+  else       ret.w = p_lvgl->header.w;
+
+  if (h > 0) ret.h = h;
+  else       ret.h = p_lvgl->header.h;
+
+  ret.p_img = p_lvgl;
+
+  return ret;
+}
+
+void lcdDrawImage(image_t *p_img, int16_t draw_x, int16_t draw_y)
+{
+  int16_t o_x;
+  int16_t o_y;  
+  int16_t o_w;
+  int16_t o_h;
   uint16_t *p_data;
   uint16_t pixel;
+  int16_t img_x = 0;
+  int16_t img_y = 0;
+  int16_t img_w = 0;
+  int16_t img_h = 0;
 
-  w = p_img->header.w;
-  h = p_img->header.h;
-  p_data = (uint16_t *)p_img->data;
+  o_w = p_img->w;
+  o_h = p_img->h;
 
-  for (int yi=0; yi<h; yi++)
+  if (img_w > 0) o_w = img_w;
+  if (img_h > 0) o_h = img_h;
+
+  p_data = (uint16_t *)p_img->p_img->data;
+
+  for (int yi=0; yi<o_h; yi++)
   {
-    for (int xi=0; xi<w; xi++)
+    o_y = (p_img->y + yi + img_y);
+    if (o_y >= p_img->p_img->header.h) break;
+
+    o_y = o_y * p_img->p_img->header.w;
+    for (int xi=0; xi<o_w; xi++)
     {
-      pixel = p_data[w*yi + xi];
+      o_x = p_img->x + xi + img_x;
+      if (o_x >= p_img->p_img->header.w) break;
+
+      pixel = p_data[o_y + o_x];
       if (pixel != green)
       {
-        lcdDrawPixel(x+xi, y+yi, pixel);
+        lcdDrawPixel(draw_x+xi, draw_y+yi, pixel);
       }
     }
-  }
+  }  
+}
+
+void lcdLogoOn(void)
+{
+  image_t logo;
+  
+  logo = lcdCreateImage(&logo_img, 0, 0, 0, 0);
+  lcdDrawImage(&logo, 0, 0);
+  lcdUpdateDraw();
+
+  is_logo_on = true;
+}
+
+void lcdLogoOff(void)
+{
+  lcdClearBuffer(black);
+  lcdUpdateDraw();
+
+  is_logo_on = false;
+}
+
+bool lcdLogoIsOn(void)
+{
+  return is_logo_on;
 }
 #endif
 
@@ -1082,6 +1144,7 @@ void cliLcd(cli_args_t *args)
         lcdRequestDraw();
       }
     }
+    lcdUpdateDraw();
 
     lcdClearBuffer(black);
     lcdUpdateDraw();

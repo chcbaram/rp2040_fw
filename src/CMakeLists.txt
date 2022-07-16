@@ -3,6 +3,8 @@ file(GLOB SRC_FILES
   bsp/*.c
   hw/*.c
   hw/driver/*.c
+  hw/driver/hangul/*.c
+  hw/driver/lcd/*.c
 )
 
 file(GLOB_RECURSE SRC_FILES_RECURSE
@@ -26,6 +28,7 @@ target_include_directories(${PRJ_NAME} PUBLIC
   common/core
   common/hw/include 
   hw
+  lib
 )
 
 target_link_libraries(${PRJ_NAME} 

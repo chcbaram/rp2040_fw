@@ -28,15 +28,17 @@ bool hwInit(void)
   resetInit();
   logInit();
   ledInit();
+  spiInit();
+  gpioInit();
   buttonInit();
-  buzzerInit();
+  buzzerInit();  
   uartInit();
   uartOpen(_DEF_UART1, 115200);
   logOpen(_DEF_UART1, 115200);
   
   flashInit();
   ws2812Init();
-  
+
   logPrintf("[ Firmware Begin... ]\r\n");
   logPrintf("Booting..Name \t\t: %s\r\n", _DEF_BOARD_NAME);
   logPrintf("Booting..Ver  \t\t: %s\r\n", _DEF_FIRMWATRE_VERSION);
@@ -53,7 +55,14 @@ bool hwInit(void)
   logPrintf("Firm Name \t\t: %s\r\n", firm_ver.name_str);
   logPrintf("Firm Ver  \t\t: %s\r\n", firm_ver.version_str);
 
+
+  lcdInit();
+  lcdSetFps(20);
+
   logBoot(false);
+
+
+
 
   return true;
 }

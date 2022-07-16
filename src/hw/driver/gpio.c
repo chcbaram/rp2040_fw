@@ -24,11 +24,10 @@ typedef struct
 
 const gpio_tbl_t gpio_tbl[GPIO_MAX_CH] =
     {
-      {25, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_LOW }, // 0. LED       
-      {13, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_HIGH}, // 1. LCD CS      
-      {22, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_LOW }, // 2. LCD DC
-      {21, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_LOW }, // 3. LCD BLK
-      {20, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_HIGH}, // 4. LCD RST
+      { 6, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_HIGH}, // 0. LCD CS      
+      { 4, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_LOW }, // 1. LCD DC
+      { 7, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_LOW }, // 2. LCD BLK
+      { 5, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_HIGH}, // 3. LCD RST
     };
 
 
