@@ -1095,6 +1095,10 @@ void lcdLogoOn(void)
   
   logo = lcdCreateImage(&logo_img, 0, 0, 0, 0);
   lcdDrawImage(&logo, 0, 0);
+
+  lcdDrawRect(0, 0, LCD_WIDTH-0, LCD_HEIGHT-0, green);
+  lcdDrawRect(1, 1, LCD_WIDTH-2, LCD_HEIGHT-2, green);
+
   lcdUpdateDraw();
 
   is_logo_on = true;

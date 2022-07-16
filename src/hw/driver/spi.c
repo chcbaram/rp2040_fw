@@ -6,7 +6,7 @@
  */
 
 
-#include "spi.h"
+#include "hw/include/spi.h"
 #include "hardware/spi.h"
 #include "hardware/dma.h"
 #include "hardware/irq.h"
