@@ -1122,6 +1122,8 @@ void cliLcd(cli_args_t *args)
 
   if (args->argc == 1 && args->isStr(0, "test") == true)
   {
+    uint8_t cnt = 0;
+
     lcdSetFont(LCD_FONT_HAN);
 
     while(cliKeepLoop())
@@ -1135,7 +1137,9 @@ void cliLcd(cli_args_t *args)
         lcdPrintf(0,16*1, white, "%d fps", lcdGetFps());
         lcdPrintf(0,16*2, white, "%d ms" , lcdGetFpsTime());
         lcdPrintf(0,16*3, white, "%d ms free" , lcdGetFpsTime() - lcdGetDrawTime());
-        lcdPrintfResize(0, 120, green, 24, "폰트 크기 24");
+        lcdPrintfResize(LCD_WIDTH-30, 16, white, 24, "%02d", cnt%100);
+        lcdPrintfResize(LCD_WIDTH-40, 40, white, 32, "%02d", cnt%100);
+        cnt++;
 
         lcdDrawFillRect( 0, 70, 10, 10, red);
         lcdDrawFillRect(10, 70, 10, 10, green);
