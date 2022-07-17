@@ -60,6 +60,9 @@ bool hwInit(void)
   lcdInit();
   lcdSetFps(20);
 
+
+  dxlInit();
+  
   logBoot(false);
 
 

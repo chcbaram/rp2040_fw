@@ -31,6 +31,8 @@
 #include "button.h"
 #include "buzzer.h"
 #include "ws2812.h"
+#include "dxl.h"
+
 
 
 bool hwInit(void);

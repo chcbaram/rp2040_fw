@@ -106,6 +106,32 @@ bool uartOpen(uint8_t ch, uint32_t baud)
       
       ret = true;
       break;      
+
+    case _DEF_UART3:
+
+      uart_tbl[ch].is_open = true;
+      uart_tbl[ch].baud    = baud;
+      uart_tbl[ch].p_uart  = uart1;
+
+      uart_init(uart_tbl[ch].p_uart, baud);
+
+      gpio_set_function(8, GPIO_FUNC_UART); // TX
+      gpio_set_function(9, GPIO_FUNC_UART); // RX
+      gpio_pull_up(9);  
+
+      // Set UART flow control CTS/RTS, we don't want these, so turn them off
+      uart_set_hw_flow(uart_tbl[ch].p_uart, false, false);
+
+      // Set our data format
+      uart_set_format(uart_tbl[ch].p_uart, 8, 1, UART_PARITY_NONE);
+
+      // Turn On FIFO      
+      uart_set_fifo_enabled(uart_tbl[ch].p_uart, true);
+
+      uartFlush(ch);
+      
+      ret = true;
+      break;         
   }
 
   return ret;
@@ -134,6 +160,7 @@ uint32_t uartAvailable(uint8_t ch)
       break;
 
     case _DEF_UART2:
+    case _DEF_UART3:
       ret = uart_is_readable(uart_tbl[ch].p_uart);
       break;      
   }
@@ -169,6 +196,7 @@ uint8_t uartRead(uint8_t ch)
       break;
 
     case _DEF_UART2:
+    case _DEF_UART3:
       ret = uart_getc(uart_tbl[ch].p_uart);
       break;            
   }
@@ -189,6 +217,7 @@ uint32_t uartWrite(uint8_t ch, uint8_t *p_data, uint32_t length)
       break;     
 
     case _DEF_UART2:
+    case _DEF_UART3:
       tx_index = 0;
       pre_time = millis();
       while(millis()-pre_time < 100)
