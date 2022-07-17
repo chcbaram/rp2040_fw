@@ -55,6 +55,9 @@
 #define      HW_LCD_WIDTH           160
 #define      HW_LCD_HEIGHT          80
 
+#define _USE_HW_PWM
+#define      HW_PWM_MAX_CH          1
+
 
 
 #define _PIN_GPIO_LCD_BLK           2

@@ -31,7 +31,8 @@ bool hwInit(void)
   spiInit();
   gpioInit();
   buttonInit();
-  buzzerInit();  
+  buzzerInit();
+  pwmInit();  
   uartInit();
   uartOpen(_DEF_UART1, 115200);
   logOpen(_DEF_UART1, 115200);

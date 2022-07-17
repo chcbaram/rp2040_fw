@@ -24,6 +24,7 @@
 #include "spi.h"
 #include "i2c.h"
 #include "can.h"
+#include "pwm.h"
 #include "lcd.h"
 #include "flash.h"
 #include "reset.h"
