@@ -62,6 +62,7 @@ bool hwInit(void)
 
 
   dxlInit();
+  rc100Init();
   
   logBoot(false);
 

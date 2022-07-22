@@ -32,7 +32,7 @@
 #include "buzzer.h"
 #include "ws2812.h"
 #include "dxl.h"
-
+#include "rc100.h"
 
 
 bool hwInit(void);
