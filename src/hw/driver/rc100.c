@@ -165,7 +165,7 @@ void cliCmd(cli_args_t *args)
 
   if (ret == false)
   {
-    cliPrintf( "rc100 info 1~%d\n", UART_MAX_CH-1);
+    cliPrintf( "rc100 info 1~%d\n", UART_MAX_CH);
   }
 }
 #endif
