@@ -275,7 +275,7 @@ bool fsFileDel(const char *filename)
   return true;
 }
 
-int32_t fsFileRead(fs_t *p_fs, uint8_t *p_data, uint32_t length)
+int32_t fsFileRead(fs_t *p_fs, void *p_data, uint32_t length)
 {
   int32_t ret;
 
@@ -289,7 +289,7 @@ int32_t fsFileRead(fs_t *p_fs, uint8_t *p_data, uint32_t length)
   return ret;
 }
 
-int32_t fsFileWrite(fs_t *p_fs, uint8_t *p_data, uint32_t length)
+int32_t fsFileWrite(fs_t *p_fs, void *p_data, uint32_t length)
 {
   int32_t ret;
 
@@ -557,18 +557,19 @@ void cliCmd(cli_args_t *args)
   {
     // read current count
     uint32_t boot_count = 0;
-    lfs_file_t file;
+    fs_t fs;
+    
+    if (fsFileOpen(&fs, "boot_count") == true)
+    {
+      fsFileRead(&fs, &boot_count, sizeof(boot_count));
 
-    lfs_file_open(&lfs, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT);
-    lfs_file_read(&lfs, &file, &boot_count, sizeof(boot_count));
-
-    // update boot count
-    boot_count += 1;
-    lfs_file_rewind(&lfs, &file);
-    lfs_file_write(&lfs, &file, &boot_count, sizeof(boot_count));
-
-    // remember the storage is not updated until the file is closed successfully
-    lfs_file_close(&lfs, &file);
+      // update boot count
+      boot_count += 1;
+      fsFileRewind(&fs);
+      fsFileWrite(&fs, &boot_count, sizeof(boot_count));
+      
+      fsFileClose(&fs);
+    }
 
     cliPrintf("boot_count : %d\n", boot_count);
 
