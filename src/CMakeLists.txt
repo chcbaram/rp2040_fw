@@ -12,6 +12,7 @@ file(GLOB SRC_FILES
 
 file(GLOB_RECURSE SRC_FILES_RECURSE
   ap/*.cpp
+  ap/*.c
   common/*.c 
 )
 
