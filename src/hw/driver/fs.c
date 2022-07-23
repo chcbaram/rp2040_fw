@@ -447,8 +447,56 @@ static int fsDeviceUnlock(const struct lfs_config *c)
 
 
 #ifdef _USE_HW_CLI
+int lfs_ls(lfs_t *lfs, const char *path)
+{
+  lfs_dir_t dir;
+  int err = lfs_dir_open(lfs, &dir, path);
+  if (err)
+  {
+    return err;
+  }
 
-int lfs_ls(lfs_t *lfs, const char *path);
+  struct lfs_info info;
+  while (true)
+  {
+    int res = lfs_dir_read(lfs, &dir, &info);
+    if (res < 0)
+    {
+      return res;
+    }
+
+    if (res == 0)
+    {
+      break;
+    }
+
+    switch (info.type)
+    {
+      case LFS_TYPE_REG: cliPrintf("reg "); break;
+      case LFS_TYPE_DIR: cliPrintf("dir "); break;
+      default:           cliPrintf("?   "); break;
+    }
+
+    static const char *prefixes[] = {"", "K", "M", "G"};
+    for (int i = sizeof(prefixes)/sizeof(prefixes[0])-1; i >= 0; i--)
+    {
+      if (info.size >= (1 << 10*i)-1)
+      {
+        cliPrintf("%*u%sB ", 4-(i != 0), info.size >> 10*i, prefixes[i]);
+        break;
+      }
+    }
+
+    cliPrintf("%s\n", info.name);
+  }
+
+  err = lfs_dir_close(lfs, &dir);
+  if (err) {
+      return err;
+  }
+
+  return 0;
+}
 
 void cliCmd(cli_args_t *args)
 {
@@ -554,58 +602,8 @@ void cliCmd(cli_args_t *args)
     cliPrintf("fs test \n");
     cliPrintf("fs set_name name_str \n");
   }
-
 }
 
-int lfs_ls(lfs_t *lfs, const char *path)
-{
-  lfs_dir_t dir;
-  int err = lfs_dir_open(lfs, &dir, path);
-  if (err)
-  {
-    return err;
-  }
 
-  struct lfs_info info;
-  while (true)
-  {
-    int res = lfs_dir_read(lfs, &dir, &info);
-    if (res < 0)
-    {
-      return res;
-    }
-
-    if (res == 0)
-    {
-      break;
-    }
-
-    switch (info.type)
-    {
-      case LFS_TYPE_REG: cliPrintf("reg "); break;
-      case LFS_TYPE_DIR: cliPrintf("dir "); break;
-      default:           cliPrintf("?   "); break;
-    }
-
-    static const char *prefixes[] = {"", "K", "M", "G"};
-    for (int i = sizeof(prefixes)/sizeof(prefixes[0])-1; i >= 0; i--)
-    {
-      if (info.size >= (1 << 10*i)-1)
-      {
-        cliPrintf("%*u%sB ", 4-(i != 0), info.size >> 10*i, prefixes[i]);
-        break;
-      }
-    }
-
-    cliPrintf("%s\n", info.name);
-  }
-
-  err = lfs_dir_close(lfs, &dir);
-  if (err) {
-      return err;
-  }
-
-  return 0;
-}
 
 #endif
