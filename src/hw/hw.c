@@ -38,7 +38,9 @@ bool hwInit(void)
   logOpen(_DEF_UART1, 115200);
   
   flashInit();
+  fsInit();
   ws2812Init();
+
 
   logPrintf("[ Firmware Begin... ]\r\n");
   logPrintf("Booting..Name \t\t: %s\r\n", _DEF_BOARD_NAME);

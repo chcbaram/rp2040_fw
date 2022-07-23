@@ -63,7 +63,9 @@
 #define      HW_DXL_PACKET_BUF_MAX  512
 #define      HW_DXL_DEVICE_CNT_MAX  16
 
-
+#define _USE_HW_FS
+#define      HW_FS_MAX_SIZE         (1*1024*1024)
+#define      HW_FS_FLASH_OFFSET     0x10100000
 
 #define _PIN_GPIO_LCD_BLK           2
 #define _PIN_GPIO_LCD_DC            1

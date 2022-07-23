@@ -33,6 +33,7 @@
 #include "ws2812.h"
 #include "dxl.h"
 #include "rc100.h"
+#include "fs.h"
 
 
 bool hwInit(void);

@@ -6,6 +6,8 @@ file(GLOB SRC_FILES
   hw/driver/hangul/*.c
   hw/driver/lcd/*.c
   hw/driver/dxl/*.c
+
+  lib/littlefs/*.c
 )
 
 file(GLOB_RECURSE SRC_FILES_RECURSE
