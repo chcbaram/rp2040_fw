@@ -43,7 +43,7 @@
 #define      HW_WS2812_MAX_CH       1
 
 #define _USE_HW_GPIO
-#define      HW_GPIO_MAX_CH         4
+#define      HW_GPIO_MAX_CH         5
 
 #define _USE_HW_SPI
 #define      HW_SPI_MAX_CH          1

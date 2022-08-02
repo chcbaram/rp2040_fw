@@ -28,6 +28,7 @@ const gpio_tbl_t gpio_tbl[GPIO_MAX_CH] =
       { 4, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_LOW }, // 1. LCD DC
       { 7, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_LOW }, // 2. LCD BLK
       { 5, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_HIGH}, // 3. LCD RST
+      {19, _DEF_OUTPUT, _DEF_HIGH, _DEF_LOW,  _DEF_LOW }, // 4. SPK MUTE
     };
 
 
