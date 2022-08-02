@@ -437,7 +437,7 @@ void cliI2C(cli_args_t *args)
     ret = true;
   }
 
-  if (args->argc == 3 && args->isStr(0, "radio"))
+  if (args->argc == 2 && args->isStr(0, "radio"))
   {
     float frequency;
     uint32_t frequencyB;
@@ -480,6 +480,7 @@ void cliI2C(cli_args_t *args)
     cliPrintf( "i2c write channel dev_addr reg_addr data\n");
     cliPrintf( "i2c read_d channel dev_addr length\n");
     cliPrintf( "i2c write_d channel dev_addr data\n");
+    cliPrintf( "i2c radio 107.7\n");
   }
 }
 
