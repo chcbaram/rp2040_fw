@@ -48,6 +48,9 @@
 #define _USE_HW_SPI
 #define      HW_SPI_MAX_CH          1
 
+#define _USE_HW_I2C
+#define      HW_I2C_MAX_CH          1
+
 #define _USE_HW_LCD
 #define      HW_LCD_LVGL            1
 #define      HW_LCD_LOGO            1

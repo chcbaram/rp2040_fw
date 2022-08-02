@@ -41,7 +41,7 @@ typedef struct
 
 static i2c_tbl_t i2c_tbl[I2C_MAX_CH] =
     {
-        {i2c1, 15,  14},
+        {i2c0, 17,  16},
     };
 
 
@@ -94,10 +94,10 @@ bool i2cBegin(uint8_t ch, uint32_t freq_khz)
 
       i2c_init(i2c_tbl[ch].h_i2c, freq_khz * 1000);
       
-      gpio_set_function(14, GPIO_FUNC_I2C);
-      gpio_set_function(15, GPIO_FUNC_I2C);
-      gpio_pull_up(14);
-      gpio_pull_up(15);
+      gpio_set_function(17, GPIO_FUNC_I2C);
+      gpio_set_function(16, GPIO_FUNC_I2C);
+      gpio_pull_up(17);
+      gpio_pull_up(16);
 
 
       ret = true;
@@ -204,26 +204,20 @@ bool i2cReadBytes(uint8_t ch, uint16_t dev_addr, uint16_t reg_addr, uint8_t *p_d
 bool i2cReadData(uint8_t ch, uint16_t dev_addr, uint8_t *p_data, uint32_t length, uint32_t timeout)
 {
   bool ret = false;
-  #if 0
-  HAL_StatusTypeDef i2c_ret;
-  I2C_HandleTypeDef *p_handle = i2c_tbl[ch].p_hi2c;
+  int i2c_ret;
+
 
   if (ch >= I2C_MAX_CH)
   {
     return false;
   }
 
-  i2c_ret = HAL_I2C_Master_Receive(p_handle, (uint16_t)(dev_addr << 1), p_data, length, timeout);
-
-  if( i2c_ret == HAL_OK )
+  i2c_ret = i2c_read_timeout_us(i2c_tbl[ch].h_i2c, dev_addr, p_data, length, false, timeout*1000);
+  if (i2c_ret == length)
   {
     ret = true;
   }
-  else
-  {
-    ret = false;
-  }
-  #endif
+
   return ret;
 }
 
@@ -235,16 +229,21 @@ bool i2cWriteByte (uint8_t ch, uint16_t dev_addr, uint16_t reg_addr, uint8_t dat
 bool i2cWriteBytes(uint8_t ch, uint16_t dev_addr, uint16_t reg_addr, uint8_t *p_data, uint32_t length, uint32_t timeout)
 {
   bool ret = false;
-
   int i2c_ret;
   uint8_t tx_buf[length+1];
+
+
+  if (ch >= I2C_MAX_CH)
+  {
+    return false;
+  }
 
   tx_buf[0] = reg_addr;
   for (int i=0; i<length; i++)
   {
     tx_buf[1+i] = p_data[i];
   }
-  i2c_ret = i2c_write_timeout_us(i2c_tbl[ch].h_i2c, dev_addr, tx_buf, length+1, false, 50*1000); 
+  i2c_ret = i2c_write_timeout_us(i2c_tbl[ch].h_i2c, dev_addr, tx_buf, length+1, false, timeout*1000); 
   if (i2c_ret > 0)
   {
     ret = true;
@@ -256,9 +255,8 @@ bool i2cWriteBytes(uint8_t ch, uint16_t dev_addr, uint16_t reg_addr, uint8_t *p_
 bool i2cWriteData(uint8_t ch, uint16_t dev_addr, uint8_t *p_data, uint32_t length, uint32_t timeout)
 {
   bool ret = false;
-  #if 0
-  HAL_StatusTypeDef i2c_ret;
-  I2C_HandleTypeDef *p_handle = i2c_tbl[ch].p_hi2c;
+  int i2c_ret;
+
 
   if (ch >= I2C_MAX_CH)
   {
@@ -266,17 +264,12 @@ bool i2cWriteData(uint8_t ch, uint16_t dev_addr, uint8_t *p_data, uint32_t lengt
   }
 
 
-  i2c_ret = HAL_I2C_Master_Transmit(p_handle, (uint16_t)(dev_addr << 1), p_data, length, timeout);
-
-  if(i2c_ret == HAL_OK)
+  i2c_ret = i2c_write_timeout_us(i2c_tbl[ch].h_i2c, dev_addr, p_data, length, false, timeout*1000); 
+  if (i2c_ret == length)
   {
     ret = true;
   }
-  else
-  {
-    ret = false;
-  }
-  #endif
+
   return ret;
 }
 
@@ -314,7 +307,7 @@ void delayUs(uint32_t us)
 #ifdef _USE_HW_CLI
 void cliI2C(cli_args_t *args)
 {
-  bool ret = true;
+  bool ret = false;
   bool i2c_ret;
 
   uint8_t print_ch;
@@ -328,37 +321,43 @@ void cliI2C(cli_args_t *args)
   uint32_t pre_time;
 
 
-  if (args->argc == 2)
+  if (args->argc == 2 && args->isStr(0, "scan") == true)
   {
     print_ch = (uint16_t) args->getData(1);
 
     print_ch = constrain(print_ch, 1, I2C_MAX_CH);
     print_ch -= 1;
 
-    if(args->isStr(0, "scan") == true)
+    for (i=0x00; i<= 0x7F; i++)
     {
-      for (i=0x00; i<= 0x7F; i++)
+      if (i2cIsDeviceReady(print_ch, i) == true)
       {
-        if (i2cIsDeviceReady(print_ch, i) == true)
-        {
-          cliPrintf("I2C CH%d Addr 0x%X : OK\n", print_ch+1, i);
-        }
+        cliPrintf("I2C CH%d Addr 0x%X : OK\n", print_ch+1, i);
       }
     }
-    else if(args->isStr(0, "begin") == true)
-    {
-      i2c_ret = i2cBegin(print_ch, 400);
-      if (i2c_ret == true)
-      {
-        cliPrintf("I2C CH%d Begin OK\n", print_ch + 1);
-      }
-      else
-      {
-        cliPrintf("I2C CH%d Begin Fail\n", print_ch + 1);
-      }
-    }
+    ret = true;  
   }
-  else if (args->argc == 5)
+
+  if (args->argc == 2 && args->isStr(0, "begin") == true)
+  {
+    print_ch = (uint16_t) args->getData(1);
+
+    print_ch = constrain(print_ch, 1, I2C_MAX_CH);
+    print_ch -= 1;
+
+    i2c_ret = i2cBegin(print_ch, 400);
+    if (i2c_ret == true)
+    {
+      cliPrintf("I2C CH%d Begin OK\n", print_ch + 1);
+    }
+    else
+    {
+      cliPrintf("I2C CH%d Begin Fail\n", print_ch + 1);
+    }
+    ret = true;
+  }
+
+  if (args->argc == 5 && args->isStr(0, "read") == true)
   {
     print_ch = (uint16_t) args->getData(1);
     print_ch = constrain(print_ch, 1, I2C_MAX_CH);
@@ -368,46 +367,110 @@ void cliI2C(cli_args_t *args)
     length   = (uint16_t) args->getData(4);
     ch       = print_ch - 1;
 
-    if(args->isStr(0, "read") == true)
+    for (i=0; i<length; i++)
     {
-      for (i=0; i<length; i++)
-      {
-        i2c_ret = i2cReadByte(ch, dev_addr, reg_addr+i, i2c_data, 100);
-
-        if (i2c_ret == true)
-        {
-          cliPrintf("%d I2C - 0x%02X : 0x%02X\n", print_ch, reg_addr+i, i2c_data[0]);
-        }
-        else
-        {
-          cliPrintf("%d I2C - Fail \n", print_ch);
-          break;
-        }
-      }
-    }
-    else if(args->isStr(0, "write") == true)
-    {
-      pre_time = millis();
-      i2c_ret = i2cWriteByte(ch, dev_addr, reg_addr, (uint8_t)length, 100);
+      i2c_ret = i2cReadByte(ch, dev_addr, reg_addr+i, i2c_data, 100);
 
       if (i2c_ret == true)
       {
-        cliPrintf("%d I2C - 0x%02X : 0x%02X, %d ms\n", print_ch, reg_addr, length, millis()-pre_time);
+        cliPrintf("%d I2C - 0x%02X : 0x%02X\n", print_ch, reg_addr+i, i2c_data[0]);
       }
       else
       {
         cliPrintf("%d I2C - Fail \n", print_ch);
+        break;
+      }
+    }
+    ret = true;
+  }
+
+  if (args->argc == 5 && args->isStr(0, "write") == true)
+  {
+    print_ch = (uint16_t) args->getData(1);
+    print_ch = constrain(print_ch, 1, I2C_MAX_CH);
+
+    dev_addr = (uint16_t) args->getData(2);
+    reg_addr = (uint16_t) args->getData(3);
+    length   = (uint16_t) args->getData(4);
+    ch       = print_ch - 1;
+
+    pre_time = millis();
+    i2c_ret = i2cWriteByte(ch, dev_addr, reg_addr, (uint8_t)length, 100);
+
+    if (i2c_ret == true)
+    {
+      cliPrintf("%d I2C - 0x%02X : 0x%02X, %d ms\n", print_ch, reg_addr, length, millis()-pre_time);
+    }
+    else
+    {
+      cliPrintf("%d I2C - Fail \n", print_ch);
+    }
+    ret = true;
+  }
+
+  if (args->argc == 4 && args->isStr(0, "read_d") == true)
+  {
+    print_ch = (uint16_t) args->getData(1);
+    print_ch = constrain(print_ch, 1, I2C_MAX_CH);
+
+    dev_addr = (uint16_t) args->getData(2);
+    length   = (uint16_t) args->getData(3);
+    ch       = print_ch - 1;
+
+    length   = constrain(length, 0, 256);  
+    
+
+    uint8_t buf[length];
+
+    i2c_ret = i2cReadData(ch, dev_addr, buf, length, 100);
+    if (i2c_ret == true)
+    {
+      for (int i=0; i<length; i++)
+      {
+        cliPrintf("%d I2C - 0x%02X : 0x%02X\n", print_ch, i, buf[i]);
       }
     }
     else
     {
-      ret = false;
+      cliPrintf("%d I2C - Fail \n", print_ch);
     }
+    ret = true;
   }
-  else
+
+  if (args->argc == 3 && args->isStr(0, "radio"))
   {
-    ret = false;
+    float frequency;
+    uint32_t frequencyB;
+    uint8_t frequencyH;
+    uint8_t frequencyL;
+
+    frequency  = args->getFloat(1);
+    frequencyB = 4*(frequency*1000000+225000)/32768; //calculating PLL word
+    frequencyH =frequencyB>>8;
+    frequencyL =frequencyB&0XFF;
+
+    uint8_t buf[5];
+
+    cliPrintf("%f Khz\n", frequency);
+
+    buf[0] = frequencyH;
+    buf[1] = frequencyL;
+    buf[2] = 0xB0;
+    buf[3] = 0x10;
+    buf[4] = 0x00;
+    if (i2cWriteData(0, 0x60, buf, 5, 100) == true)
+    {
+      cliPrintf("OK\n");
+    }
+    else
+    {
+      cliPrintf("Fail\n");
+    }
+
+
+    ret = true;
   }
+
 
   if (ret == false)
   {
@@ -415,6 +478,8 @@ void cliI2C(cli_args_t *args)
     cliPrintf( "i2c scan channel[1~%d]\n", I2C_MAX_CH);
     cliPrintf( "i2c read channel dev_addr reg_addr length\n");
     cliPrintf( "i2c write channel dev_addr reg_addr data\n");
+    cliPrintf( "i2c read_d channel dev_addr length\n");
+    cliPrintf( "i2c write_d channel dev_addr data\n");
   }
 }
 

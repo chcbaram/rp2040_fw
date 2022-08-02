@@ -29,6 +29,7 @@ bool hwInit(void)
   logInit();
   ledInit();
   spiInit();
+  i2cInit();
   gpioInit();
   buttonInit();
   buzzerInit();
