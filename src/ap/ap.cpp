@@ -78,6 +78,7 @@ void menuInit(void)
   menu.img[1] = lcdCreateImage(&menu_img, 64, 0, 64, 80);
   menu.img[2] = lcdCreateImage(&menu_img,128, 0, 64, 80);
 
+  buzzerSetVolume(1);
   menuLoadInfo();
 }
 

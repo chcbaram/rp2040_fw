@@ -7,6 +7,7 @@ static bool is_on = false;
 static uint32_t on_time_cnt = 0;
 static uint32_t slice_num;
 static const uint32_t buzzer_gpio = 18;
+static uint8_t buzzer_volume = 100;
 
 #ifdef _USE_HW_CLI
 static void cliBuzzer(cli_args_t *args);
@@ -50,6 +51,7 @@ bool buzzerInit(void)
 void buzzerOn(uint16_t freq_hz, uint16_t time_ms)
 {
   uint32_t pwm_top;
+  uint32_t pwm_duty;
 
 
   if (freq_hz == 0) return;
@@ -59,7 +61,9 @@ void buzzerOn(uint16_t freq_hz, uint16_t time_ms)
   pwm_top = 1000000/freq_hz;
   pwm_set_wrap(slice_num, pwm_top);
   
-  pwm_set_chan_level(slice_num, PWM_CHAN_A, pwm_top/2);
+  pwm_duty = cmap(buzzer_volume, 0, 100, 0, (pwm_top/2));
+
+  pwm_set_chan_level(slice_num, PWM_CHAN_A, pwm_duty);
 
   is_on = true;
   on_time_cnt = time_ms;
@@ -74,6 +78,16 @@ void buzzerOff(void)
 {  
   pwm_set_chan_level(slice_num, PWM_CHAN_A, 0);
   is_on = false;
+}
+
+void buzzerSetVolume(uint8_t volume)
+{
+  buzzer_volume = constrain(volume, 0, 100);
+}
+
+uint8_t buzzerGetVolume(void)
+{
+  return buzzer_volume;
 }
 
 #ifdef _USE_HW_CLI

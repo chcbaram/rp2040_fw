@@ -108,6 +108,8 @@ bool buzzerInit(void);
 void buzzerOn(uint16_t freq_hz, uint16_t time_ms);
 void buzzerOff(void);
 void buzzerBeep(uint16_t time_ms);
+void buzzerSetVolume(uint8_t volume);
+uint8_t buzzerGetVolume(void);
 
 #endif
 
