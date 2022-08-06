@@ -1,5 +1,5 @@
 #include "ap.h"
-
+#include "app/radio.h"
 
 
 
@@ -20,6 +20,7 @@ void menuInit(void);
 void menuUpdate(void);
 void menuSaveInfo(void);
 void menuLoadInfo(void);
+void menuRunApp(uint8_t index);
 
 
 LVGL_IMG_DEF(menu_img);
@@ -70,9 +71,9 @@ void menuInit(void)
 {
   menu.menu_cnt = 3;
   menu.menu_index = 0;
-  buttonObjCreate(&menu.btn_left, 0, 50, 1000, 100);      
+  buttonObjCreate(&menu.btn_left,  0, 50, 1000, 100);      
   buttonObjCreate(&menu.btn_right, 1, 50, 1000, 100);      
-  buttonObjCreate(&menu.btn_enter, 2, 50, 1000, 100);      
+  buttonObjCreate(&menu.btn_enter, 3, 50, 1000, 100);      
 
   menu.img[0] = lcdCreateImage(&menu_img,  0, 0, 64, 80);
   menu.img[1] = lcdCreateImage(&menu_img, 64, 0, 64, 80);
@@ -84,9 +85,9 @@ void menuInit(void)
 
 void menuUpdate(void)
 {
-  buttonObjUpdate(&menu.btn_left);
-  buttonObjUpdate(&menu.btn_right);
-  buttonObjUpdate(&menu.btn_enter);
+  buttonObjClearAndUpdate(&menu.btn_left);
+  buttonObjClearAndUpdate(&menu.btn_right);
+  buttonObjClearAndUpdate(&menu.btn_enter);
 
 
   if (buttonObjGetEvent(&menu.btn_left) & BUTTON_EVT_CLICKED)
@@ -110,9 +111,12 @@ void menuUpdate(void)
     menuSaveInfo();
   }
 
+  if (buttonObjGetEvent(&menu.btn_enter) & BUTTON_EVT_CLICKED)
+  {
+    buzzerBeep(50);
+    menuRunApp(menu.menu_index);
+  }
 
-  buttonObjClearEventAll(&menu.btn_left);
-  buttonObjClearEventAll(&menu.btn_right);
 
 
   if (lcdDrawAvailable() > 0)
@@ -161,6 +165,30 @@ void menuLoadInfo(void)
   {
     fsFileRead(&fs, &menu.menu_index, sizeof(menu.menu_index));
     fsFileClose(&fs);
+  }
+}
+
+void menuRunApp(uint8_t index)
+{
+  bool is_run = true;
+
+  switch(index)
+  {
+    case 0:
+      radioInit();
+      radioMain();
+      break;
+
+    default:
+      is_run = false;
+      break;
+  }
+
+  if (is_run == true)
+  {
+    buttonObjInit(&menu.btn_left);
+    buttonObjInit(&menu.btn_right);
+    buttonObjInit(&menu.btn_enter);      
   }
 }
 

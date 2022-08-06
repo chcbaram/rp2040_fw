@@ -64,6 +64,7 @@ bool hwInit(void)
 
   dxlInit();
   rc100Init();
+  tea5767Init();
   
   logBoot(false);
 

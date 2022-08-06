@@ -15,6 +15,7 @@
 #define _USE_HW_RESET
 #define _USE_HW_BUZZER
 #define _USE_HW_RC100
+#define _USE_HW_TEA5767
 
 
 #define _USE_HW_LED
@@ -25,7 +26,7 @@
 
 
 #define _USE_HW_CLI
-#define      HW_CLI_CMD_LIST_MAX    16
+#define      HW_CLI_CMD_LIST_MAX    32
 #define      HW_CLI_CMD_NAME_MAX    16
 #define      HW_CLI_LINE_HIS_MAX    4
 #define      HW_CLI_LINE_BUF_MAX    64
@@ -74,6 +75,6 @@
 #define _PIN_GPIO_LCD_DC            1
 #define _PIN_GPIO_LCD_CS            0
 #define _PIN_GPIO_LCD_RST           3
-
+#define _PIN_GPIO_RADIO_SPK         4
 
 #endif /* SRC_HW_HW_DEF_H_ */

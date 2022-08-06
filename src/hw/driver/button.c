@@ -106,10 +106,15 @@ void buttonObjCreate(button_obj_t *p_obj, uint8_t ch, uint32_t pressed_time, uin
   p_obj->click_count = 0;
 }
 
-bool buttonObjUpdate(button_obj_t *p_obj)
+bool buttonObjUpdateEx(button_obj_t *p_obj, bool clear_event)
 {
   bool ret = false;
 
+
+  if (clear_event == true)
+  {
+    buttonObjClearEventAll(p_obj);
+  }
 
   switch(p_obj->state)
   {
@@ -208,6 +213,26 @@ bool buttonObjUpdate(button_obj_t *p_obj)
   }
   
   return ret;
+}
+
+bool buttonObjInit(button_obj_t *p_obj)
+{
+  p_obj->state = 0;
+  p_obj->pre_time = millis();
+  p_obj->event_flag = 0;
+  p_obj->state_flag = 0;
+  p_obj->click_count = 0;  
+  return true;
+}
+
+bool buttonObjUpdate(button_obj_t *p_obj)
+{
+  return buttonObjUpdateEx(p_obj, false);
+}
+
+bool buttonObjClearAndUpdate(button_obj_t *p_obj)
+{
+  return buttonObjUpdateEx(p_obj, true);
 }
 
 uint8_t buttonObjGetEvent(button_obj_t *p_obj)

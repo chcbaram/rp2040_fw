@@ -34,6 +34,7 @@
 #include "dxl.h"
 #include "rc100.h"
 #include "fs.h"
+#include "tea5767.h"
 
 
 bool hwInit(void);
