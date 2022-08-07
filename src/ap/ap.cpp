@@ -1,5 +1,5 @@
 #include "ap.h"
-#include "app/radio.h"
+#include "app/radio/radio.h"
 
 
 
@@ -12,6 +12,9 @@ typedef struct
   button_obj_t btn_left;    
   button_obj_t btn_right;    
   button_obj_t btn_enter;  
+
+  bool is_save;
+  uint32_t pre_time;
 } menu_t;
 
 
@@ -79,6 +82,7 @@ void menuInit(void)
   menu.img[1] = lcdCreateImage(&menu_img, 64, 0, 64, 80);
   menu.img[2] = lcdCreateImage(&menu_img,128, 0, 64, 80);
 
+  menu.is_save = false;
   buzzerSetVolume(1);
   menuLoadInfo();
 }
@@ -101,14 +105,17 @@ void menuUpdate(void)
     {
       menu.menu_index = menu.menu_cnt - 1;
     }
-    menuSaveInfo();
+    menu.is_save = true;
+    menu.pre_time = millis();    
   }
   if (buttonObjGetEvent(&menu.btn_right) & BUTTON_EVT_CLICKED)
   {
     buzzerBeep(50);
     menu.menu_index++;
     menu.menu_index %= menu.menu_cnt;
-    menuSaveInfo();
+
+    menu.is_save = true;
+    menu.pre_time = millis();    
   }
 
   if (buttonObjGetEvent(&menu.btn_enter) & BUTTON_EVT_CLICKED)
@@ -117,6 +124,11 @@ void menuUpdate(void)
     menuRunApp(menu.menu_index);
   }
 
+  if (menu.is_save == true && millis()-menu.pre_time >= 100)
+  {
+    menu.is_save = false;
+    menuSaveInfo();
+  }
 
 
   if (lcdDrawAvailable() > 0)

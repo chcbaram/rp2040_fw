@@ -4,6 +4,9 @@
   "files.associations": {
     "uart.h": "c",
     "button.h": "c",
-    "buzzer.h": "c"
+    "buzzer.h": "c",
+    "hw.h": "c",
+    "hw_def.h": "c",
+    "bsp.h": "c"
   }
 }
