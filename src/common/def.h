@@ -132,6 +132,8 @@ typedef struct
   uint32_t fw_addr;
   uint32_t fw_size;
   uint32_t fw_crc;
+
+  uint32_t tag_crc;
 } firm_tag_t;
 
 #endif /* SRC_COMMON_DEF_H_ */

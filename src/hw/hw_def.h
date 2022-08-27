@@ -5,7 +5,7 @@
 #include "bsp.h"
 
 
-#define _DEF_FIRMWATRE_VERSION    "V220702R1"
+#define _DEF_FIRMWATRE_VERSION    "V220827R1"
 #define _DEF_BOARD_NAME           "RP2040_FIRM"
 
 
@@ -44,7 +44,7 @@
 #define      HW_WS2812_MAX_CH       1
 
 #define _USE_HW_GPIO
-#define      HW_GPIO_MAX_CH         5
+#define      HW_GPIO_MAX_CH         6
 
 #define _USE_HW_SPI
 #define      HW_SPI_MAX_CH          1

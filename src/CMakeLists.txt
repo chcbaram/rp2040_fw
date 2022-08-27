@@ -25,7 +25,7 @@ add_executable(
   ${SRC_FILES_RECURSE}
 )
 
-target_include_directories(${PRJ_NAME} PUBLIC 
+target_include_directories(${PRJ_NAME} PRIVATE 
   ap
   bsp
   common 
@@ -35,17 +35,25 @@ target_include_directories(${PRJ_NAME} PUBLIC
   lib
 )
 
+add_compile_definitions(${PRJ_NAME}  PUBLIC
+  PICO_AUDIO_PIO=1
+  PICO_AUDIO_DMA_IRQ=1
+  )
+
 target_link_libraries(${PRJ_NAME} 
   cmsis_core
   pico_stdlib
+  pico_audio_i2s
   hardware_spi
   hardware_dma
   hardware_irq
   hardware_i2c
   hardware_flash
   hardware_pwm
-  hardware_pio
+  hardware_pio  
   )
+
+
 
 pico_add_extra_outputs(${PRJ_NAME})
 pico_enable_stdio_usb(${PRJ_NAME}  1)
