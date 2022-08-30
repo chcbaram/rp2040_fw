@@ -8,6 +8,10 @@
 #ifndef SRC_HW_DRIVER_DXL_DXL_UART_H_
 #define SRC_HW_DRIVER_DXL_DXL_UART_H_
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 #include "hw_def.h"
 
 
@@ -16,6 +20,10 @@
 
 bool dxlUartDriver(dxl_driver_t *p_driver);
 
+#endif
+
+#ifdef __cplusplus
+ }
 #endif
 
 #endif /* SRC_HW_DRIVER_DXL_DXL_UART_H_ */
